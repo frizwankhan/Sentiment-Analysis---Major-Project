@@ -34,6 +34,7 @@ df['review']=df['review'].apply(lambda x: tokenizer.tokenize(x.lower()))
 #   print(words)
 #   return words
 
+
 x = df.iloc[:,0].values
 y = df.iloc[:,1].values
 
