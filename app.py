@@ -97,5 +97,5 @@ select = st.text_input('Enter your message')
 # select = tokenizer.tokenize(select.lower())
 # select = vectorizer.transform([select]).toarray()
 # output = np.argmax(model.predict(select), axis=-1)
-
-st.title(text_model.predict([select])[0])
+output = text_model.predict([select])
+st.title(output[0])
