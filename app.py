@@ -21,7 +21,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC
 
-df = pd.read_csv('data.csv')
 
 # def remove_punctuations(text):
 #     for punctuation in string.punctuation:
@@ -39,8 +38,6 @@ df = pd.read_csv('data.csv')
 #   return words
 
 
-x = df.iloc[:,0].values
-y = df.iloc[:,1].values
 
 # def dummy_fun(doc):
 #     return doc
@@ -55,8 +52,6 @@ y = df.iloc[:,1].values
 # x = x.toarray()
 
 # x_train,x_test,y_train,y_test = train_test_split(x,y,test_size = 0.5,random_state = 0,stratify = y)
-text_model = Pipeline([('tfidf',TfidfVectorizer()),('model',SVC())]) 
-text_model.fit(x,y)
 
 # y_train = keras.utils.to_categorical(y_train)
 # y_test = keras.utils.to_categorical(y_test)
@@ -90,12 +85,22 @@ text_model.fit(x,y)
 # model = SVC()
 # model.fit(x_train,y_train)
 
-st.title('sentiment analysis')
-select = st.text_input('Enter your message')
+
 
 # select = remove_punctuations(select)
 # select = tokenizer.tokenize(select.lower())
 # select = vectorizer.transform([select]).toarray()
 # output = np.argmax(model.predict(select), axis=-1)
+
+df = pd.read_csv('data.csv')
+
+x = df.iloc[:,0].values
+y = df.iloc[:,1].values
+text_model = Pipeline([('tfidf',TfidfVectorizer()),('model',SVC())]) 
+text_model.fit(x,y)
+
+
+st.title('sentiment analysis')
+select = st.text_input('Enter your message')
 output = text_model.predict([select])
 st.title(output[0])
