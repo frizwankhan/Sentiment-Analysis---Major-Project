@@ -4,6 +4,9 @@ import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 # import tensorflow as tf
 # from tensorflow import keras
+from sklearn.pipeline import Pipeline
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.svm import SVC
 
 import nltk
 nltk.download('stopwords')
@@ -20,15 +23,15 @@ from sklearn.svm import SVC
 
 df = pd.read_csv('data.csv')
 
-def remove_punctuations(text):
-    for punctuation in string.punctuation:
-        text = text.replace(punctuation, '')
-    return text
+# def remove_punctuations(text):
+#     for punctuation in string.punctuation:
+#         text = text.replace(punctuation, '')
+#     return text
 
-df['review'] = df['review'].apply(remove_punctuations)
+# df['review'] = df['review'].apply(remove_punctuations)
 
-tokenizer=RegexpTokenizer(r'\w+')
-df['review']=df['review'].apply(lambda x: tokenizer.tokenize(x.lower()))
+# tokenizer=RegexpTokenizer(r'\w+')
+# df['review']=df['review'].apply(lambda x: tokenizer.tokenize(x.lower()))
 
 # def removestopwords(s):
 #   words=[i for i in s if i not in stopwords.words('english')]
@@ -39,19 +42,21 @@ df['review']=df['review'].apply(lambda x: tokenizer.tokenize(x.lower()))
 x = df.iloc[:,0].values
 y = df.iloc[:,1].values
 
-def dummy_fun(doc):
-    return doc
+# def dummy_fun(doc):
+#     return doc
 
-vectorizer = TfidfVectorizer(
-    analyzer='word',
-    tokenizer=dummy_fun,
-    preprocessor=dummy_fun,
-    token_pattern=None)  
+# vectorizer = TfidfVectorizer(
+#     analyzer='word',
+#     tokenizer=dummy_fun,
+#     preprocessor=dummy_fun,
+#     token_pattern=None)  
 
-x = vectorizer.fit_transform(x)
-x = x.toarray()
+# x = vectorizer.fit_transform(x)
+# x = x.toarray()
 
-x_train,x_test,y_train,y_test = train_test_split(x,y,test_size = 0.5,random_state = 0,stratify = y)
+# x_train,x_test,y_train,y_test = train_test_split(x,y,test_size = 0.5,random_state = 0,stratify = y)
+text_model = Pipeline([('tfidf',TfidfVectorizer()),('model',SVC())]) 
+text_model.fit(x,y)
 
 # y_train = keras.utils.to_categorical(y_train)
 # y_test = keras.utils.to_categorical(y_test)
@@ -82,15 +87,15 @@ x_train,x_test,y_train,y_test = train_test_split(x,y,test_size = 0.5,random_stat
 # history = model.fit(x_train, y_train,validation_data=(x_test,y_test),
 #                     epochs=50, callbacks=[early_stopping_cb])
 
-model = SVC()
-model.fit(x_train,y_train)
+# model = SVC()
+# model.fit(x_train,y_train)
 
 st.title('sentiment analysis')
 select = st.text_input('Enter your message')
 
-select = remove_punctuations(select)
-select = tokenizer.tokenize(select.lower())
-select = vectorizer.transform([select]).toarray()
-output = np.argmax(model.predict(select), axis=-1)
+# select = remove_punctuations(select)
+# select = tokenizer.tokenize(select.lower())
+# select = vectorizer.transform([select]).toarray()
+# output = np.argmax(model.predict(select), axis=-1)
 
-st.title(output[0])
+st.title(text_model.predict([select])[0])
